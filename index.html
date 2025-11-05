@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tipo de cambio</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #f6f7fb;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: 'BlissLight Regular', Arial, sans-serif;
+        }
+
+        .card {
+            background: white;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
+            border-radius: 15px;
+            padding: 1.5em 2em;
+            width: 90%;
+            max-width: 800px;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5em;
+        }
+
+        .header {
+            font-size: 0.9em;
+            color: #0d0979;
+            ;
+            font-weight: 600;
+            position: relative;
+            display: inline-block;
+        }
+
+        .header::after {
+            content: "";
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 193px;
+            height: 1px;
+            background: #0d0979;
+        }
+
+        .rates {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1em;
+        }
+
+        .currency {
+            flex: 1 1 45%;
+            text-align: left;
+        }
+
+        .currency h2 {
+            margin: 0;
+            font-size: 1.1em;
+            color: #25254a;
+        }
+
+        .value-container {
+            display: flex;
+            justify-content: left;
+            align-items: center;
+            gap: 0.6em;
+            margin-top: 0.3em;
+        }
+
+        .value {
+            font-size: 3em;
+            font-weight: bold;
+            color: #181848;
+        }
+
+        .change {
+            padding: 0.25em 0.5em;
+            border-radius: 8px;
+            font-size: 0.85em;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.2em;
+        }
+
+        .up {
+            background-color: #d8f5d0;
+            color: #0d8a12;
+        }
+
+        .down {
+            background-color: #fddddd;
+            color: #d62828;
+        }
+
+        @media (max-width: 600px) {
+            .value {
+                font-size: 2.2em;
+            }
+
+            .change {
+                font-size: 0.8em;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="card">
+        <div class="header">Moneda</div>
+        <div class="rates">
+            <div class="currency">
+                <h2>USD a PEN</h2>
+                <div class="value-container">
+                    <div id="usd-pen" class="value">--</div>
+                    <div id="usd-change" class="change">--</div>
+                </div>
+            </div>
+            <div class="currency">
+                <h2>EUR a PEN</h2>
+                <div class="value-container">
+                    <div id="eur-pen" class="value">--</div>
+                    <div id="eur-change" class="change">--</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = "https://api.exchangerate.host/live?access_key=b1297bc0a769f46cbd9c7101bc60304d";
+
+        // Guardar los valores previos para calcular variaciones
+        let prevUSD = null;
+        let prevEUR = null;
+
+        async function obtenerTiposCambio() {
+            try {
+                const res = await fetch(API_URL);
+                const data = await res.json();
+
+                if (!data.success || !data.quotes) return;
+
+                const usdPen = data.quotes.USDPEN;
+                const usdEur = data.quotes.USDEUR;
+                const eurPen = usdPen / usdEur;
+
+                actualizarValor("usd-pen", "usd-change", usdPen, prevUSD);
+                actualizarValor("eur-pen", "eur-change", eurPen, prevEUR);
+
+                prevUSD = usdPen;
+                prevEUR = eurPen;
+            } catch (e) {
+                console.error("Error al obtener tipos de cambio:", e);
+            }
+        }
+
+        function actualizarValor(idValor, idCambio, nuevoValor, valorPrevio) {
+            const valorEl = document.getElementById(idValor);
+            const cambioEl = document.getElementById(idCambio);
+
+            valorEl.textContent = nuevoValor.toFixed(3).replace(".", ",");
+
+            if (valorPrevio === null) {
+                cambioEl.textContent = "--";
+                cambioEl.className = "change";
+                return;
+            }
+
+            const variacion = ((nuevoValor - valorPrevio) / valorPrevio) * 100;
+
+            if (variacion > 0) {
+                cambioEl.textContent = `↑ ${variacion.toFixed(3)} %`;
+                cambioEl.className = "change up";
+            } else if (variacion < 0) {
+                cambioEl.textContent = `↓ ${Math.abs(variacion).toFixed(3)} %`;
+                cambioEl.className = "change down";
+            } else {
+                cambioEl.textContent = "0,000 %";
+                cambioEl.className = "change down";
+            }
+        }
+
+        obtenerTiposCambio();
+        setInterval(obtenerTiposCambio, 30000); // refresca cada 30 segundos
+
+    </script>
+</body>
+
+</html>
