@@ -158,7 +158,7 @@
     </div>
 
     <script>
-        const API_URL = "https://api.exchangerate.host/live?access_key=b1297bc0a769f46cbd9c7101bc60304d";
+        const API_URL = "https://api.fastforex.io/fetch-multi?from=USD&to=EUR,PEN&api_key=133a7fac62-18f16eb9d3-t58i7u";
         let prevUSD = null;
         let prevEUR = null;
 
@@ -166,10 +166,10 @@
             try {
                 const res = await fetch(API_URL);
                 const data = await res.json();
-                if (!data.success || !data.quotes) return;
+                if (!data.results) return;
 
-                const usdPen = data.quotes.USDPEN;
-                const usdEur = data.quotes.USDEUR;
+                const usdPen = data.results.PEN;
+                const usdEur = data.results.EUR;
                 const eurPen = usdPen / usdEur;
 
                 actualizarValor("usd-pen", "usd-change", usdPen, prevUSD);
@@ -208,7 +208,7 @@
         }
 
         obtenerTiposCambio();
-        setInterval(obtenerTiposCambio, 30000);
+        setInterval(obtenerTiposCambio, 100000);
     </script>
 </body>
 
