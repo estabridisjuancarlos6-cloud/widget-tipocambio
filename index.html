@@ -25,6 +25,7 @@
         /* Contenedor principal: ocupa todo el espacio */
         .card {
             box-sizing: border-box;
+            background: white;
             width: 100%;
             height: 100%;
             border-radius: 1.2vw;
@@ -155,61 +156,78 @@
         </div>
     </div>
 
-    <script>
-        const API_URL = "https://api.fastforex.io/fetch-multi?from=USD&to=EUR,PEN&api_key=133a7fac62-18f16eb9d3-t58i7u";
-        let prevUSD = null;
-        let prevEUR = null;
+ <script>
+const API_KEY = "133a7fac62-18f16eb9d3-t58i7u";
+const API_URL_TODAY = `https://api.fastforex.io/fetch-multi?from=USD&to=EUR,PEN&api_key=${API_KEY}`;
 
-        async function obtenerTiposCambio() {
-            try {
-                const res = await fetch(API_URL);
-                const data = await res.json();
-                if (!data.results) return;
+// Obtener fecha de ayer en formato YYYY-MM-DD
+function obtenerFechaAyer() {
+    const hoy = new Date();
+    hoy.setDate(hoy.getDate() - 1);
+    return hoy.toISOString().split("T")[0];
+}
 
-                const usdPen = data.results.PEN;
-                const usdEur = data.results.EUR;
-                const eurPen = usdPen / usdEur;
+async function obtenerTiposCambio() {
+    try {
+        // 1️⃣ Pedimos el valor de hoy
+        const resHoy = await fetch(API_URL_TODAY);
+        const dataHoy = await resHoy.json();
+        if (!dataHoy.results) return;
 
-                actualizarValor("usd-pen", "usd-change", usdPen, prevUSD);
-                actualizarValor("eur-pen", "eur-change", eurPen, prevEUR);
+        const usdPenHoy = dataHoy.results.PEN;
+        const usdEurHoy = dataHoy.results.EUR;
+        const eurPenHoy = usdPenHoy / usdEurHoy;
 
-                prevUSD = usdPen;
-                prevEUR = eurPen;
-            } catch (e) {
-                console.error("Error al obtener tipos de cambio:", e);
-            }
-        }
+        // 2️⃣ Pedimos el valor de ayer
+        const fechaAyer = obtenerFechaAyer();
+        const API_URL_AYER = `https://api.fastforex.io/historical?from=USD&to=EUR,PEN&api_key=${API_KEY}&date=${fechaAyer}`;
+        const resAyer = await fetch(API_URL_AYER);
+        const dataAyer = await resAyer.json();
+        if (!dataAyer.results) return;
 
-        function actualizarValor(idValor, idCambio, nuevoValor, valorPrevio) {
-            const valorEl = document.getElementById(idValor);
-            const cambioEl = document.getElementById(idCambio);
-            valorEl.textContent = nuevoValor.toFixed(3).replace(".", ",");
+        const usdPenAyer = dataAyer.results.PEN;
+        const usdEurAyer = dataAyer.results.EUR;
+        const eurPenAyer = usdPenAyer / usdEurAyer;
 
-            if (valorPrevio === null) {
-                cambioEl.textContent = "-";
-                cambioEl.className = "change";
-                return;
-            }
+        // 3️⃣ Actualizamos en pantalla comparando hoy vs ayer
+        actualizarValor("usd-pen", "usd-change", usdPenHoy, usdPenAyer);
+        actualizarValor("eur-pen", "eur-change", eurPenHoy, eurPenAyer);
 
-            const variacion = ((nuevoValor - valorPrevio) / valorPrevio) * 100;
+    } catch (e) {
+        console.error("Error al obtener tipos de cambio:", e);
+    }
+}
 
-            if (variacion > 0) {
-                cambioEl.textContent = `↑ ${variacion.toFixed(3)} %`;
-                cambioEl.className = "change up";
-            } else if (variacion < 0) {
-                cambioEl.textContent = `↓ ${Math.abs(variacion).toFixed(3)} %`;
-                cambioEl.className = "change down";
-            } else {
-                cambioEl.textContent = "0,000 %";
-                cambioEl.className = "change down";
-            }
-        }
+function actualizarValor(idValor, idCambio, nuevoValor, valorPrevio) {
+    const valorEl = document.getElementById(idValor);
+    const cambioEl = document.getElementById(idCambio);
 
-        obtenerTiposCambio();
-        setInterval(obtenerTiposCambio, 100000);
-    </script>
+    valorEl.textContent = nuevoValor.toFixed(3).replace(".", ",");
+
+    if (!valorPrevio) {
+        cambioEl.textContent = "-";
+        cambioEl.className = "change";
+        return;
+    }
+
+    const variacion = ((nuevoValor - valorPrevio) / valorPrevio) * 100;
+
+    if (variacion > 0) {
+        cambioEl.textContent = `↑ ${variacion.toFixed(3)} %`;
+        cambioEl.className = "change up";
+    } else if (variacion < 0) {
+        cambioEl.textContent = `↓ ${Math.abs(variacion).toFixed(3)} %`;
+        cambioEl.className = "change down";
+    } else {
+        cambioEl.textContent = "0,000 %";
+        cambioEl.className = "change down";
+    }
+}
+
+obtenerTiposCambio();
+setInterval(obtenerTiposCambio, 1000 * 60 * 60); // actualiza cada hora
+</script>
+
 </body>
 
 </html>
-
-
