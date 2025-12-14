@@ -1,233 +1,166 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tipo de cambio</title>
-    <style>
-        @font-face {
-            font-family: 'BlissLight';
-            src: url('font/BlissLight Regular.ttf') format('truetype');
-            font-weight: normal;
-            font-style: normal;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tipo de cambio</title>
 
-        html,
-        body {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            font-family: 'BlissLight', Arial, sans-serif;
-        }
+<style>
+@font-face {
+    font-family: 'BlissLight';
+    src: url('font/BlissLight Regular.ttf') format('truetype');
+}
 
-        /* Contenedor principal: ocupa todo el espacio */
-        .card {
-            box-sizing: border-box;
-            width: 100%;
-            height: 100%;
-            border-radius: 1.2vw;
-            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
-            padding: 2vw 3vw;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    font-family: 'BlissLight', Arial, sans-serif;
+}
 
-        .header {
-            font-size: 1.2vw;
-            color: #0d0979;
-            font-weight: bold;
-            position: relative;
-            margin-bottom: 5vh;
-            width: fit-content;
-        }
+.card {
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    padding: 2vw 3vw;
+    display: flex;
+    flex-direction: column;
+}
 
-        .header::after {
-            content: "";
-            position: absolute;
-            bottom: -0.5vh;
-            left: 0;
-            width: 30vw;
-            height: 0.2vh;
-            background: #0d0979;
-        }
+.header {
+    font-size: 18px;
+    color: #0d0979;
+    font-weight: bold;
+    position: relative;
+    margin-bottom: 4vh;
+    width: fit-content;
+}
 
-        .rates {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 2vw;
-        }
+.header::after {
+    content: "";
+    position: absolute;
+    bottom: -6px;
+    left: 0;
+    width: 220px;
+    height: 2px;
+    background: #0d0979;
+}
 
-        .currency {
-            flex: 1 1 45%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
+/* 👇 SIEMPRE EN COLUMNA */
+.rates {
+    display: flex;
+    flex-direction: column;
+    gap: 5vh;
+}
 
-        .currency h2 {
-            margin: 0;
-            font-size: 4vw;
-            color: #25254a;
-        }
+.currency h2 {
+    margin: 0;
+    font-size: 26px;
+    color: #25254a;
+}
 
-        .value-container {
-            display: flex;
-            align-items: center;
-            margin-top: 0.5vh;
-            gap: 0.8vw;
-        }
+.value-container {
+    display: flex;
+    align-items: center;
+    gap: 1vw;
+}
 
-        .value {
-            font-size: 10vw;
-            font-weight: bold;
-            color: #181848;
-            line-height: 1;
-        }
+.value {
+    font-size: clamp(64px, 10vw, 120px);
+    font-weight: bold;
+    color: #181848;
+    line-height: 1;
+}
 
-        .change {
-            padding: 0.3vw 0.7vw;
-            border-radius: 0.5vw;
-            font-size: 1vw;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            white-space: nowrap;
-        }
+.change {
+    padding: 6px 14px;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+}
 
-        .up {
-            background-color: #d8f5d0;
-            color: #0d8a12;
-            font-size: 28px;
-            margin-left: 10%;
-        }
+.up {
+    background-color: #d8f5d0;
+    color: #0d8a12;
+}
 
-        .down {
-            background-color: #fddddd;
-            color: #d62828;
-            font-size: 28px;
-            margin-left: 10%;
-        }
-
-        @media (max-width: 768px) {
-            .header {
-                font-size: 3vw;
-            }
-
-            .currency h2 {
-                font-size: 3.8vw;
-            }
-
-            .value {
-                font-size: 8vw;
-            }
-
-            .change {
-                font-size: 3vw;
-                padding: 1vw 2vw;
-            }
-        }
-    </style>
+.down {
+    background-color: #fddddd;
+    color: #d62828;
+}
+</style>
 </head>
 
 <body>
-    <div class="card">
-        <div class="header">Moneda</div>
-        <div class="rates">
-            <div class="currency">
-                <h2>USD a PEN</h2>
-                <div class="value-container">
-                    <div id="usd-pen" class="value">3.480</div>
-                    <div id="usd-change" class="change down">0,000 %</div>
-                </div>
+
+<div class="card">
+    <div class="header">Moneda</div>
+
+    <div class="rates">
+        <div class="currency">
+            <h2>USD a PEN</h2>
+            <div class="value-container">
+                <div id="usd-pen" class="value">3.480</div>
+                <div id="usd-change" class="change down">0,000 %</div>
             </div>
-            <div class="currency">
-                <h2>EUR a PEN</h2>
-                <div class="value-container">
-                    <div id="eur-pen" class="value">3.800</div>
-                    <div id="eur-change" class="change down">0,000 %</div>
-                </div>
+        </div>
+
+        <div class="currency">
+            <h2>EUR a PEN</h2>
+            <div class="value-container">
+                <div id="eur-pen" class="value">3.800</div>
+                <div id="eur-change" class="change down">0,000 %</div>
             </div>
         </div>
     </div>
+</div>
 
- <script>
+<script>
 const API_KEY = "956bee5e63-40416030e5-t622ch";
 const API_URL_TODAY = `https://api.fastforex.io/fetch-multi?from=USD&to=EUR,PEN&api_key=${API_KEY}`;
 
-// Obtener fecha de ayer en formato YYYY-MM-DD
 function obtenerFechaAyer() {
-    const hoy = new Date();
-    hoy.setDate(hoy.getDate() - 1);
-    return hoy.toISOString().split("T")[0];
+    const d = new Date();
+    d.setDate(d.getDate() - 1);
+    return d.toISOString().split("T")[0];
 }
 
 async function obtenerTiposCambio() {
     try {
-        // 1️⃣ Pedimos el valor de hoy
-        const resHoy = await fetch(API_URL_TODAY);
-        const dataHoy = await resHoy.json();
-        if (!dataHoy.results) return;
+        const hoy = await fetch(API_URL_TODAY).then(r => r.json());
+        if (!hoy.results) return;
 
-        const usdPenHoy = dataHoy.results.PEN;
-        const usdEurHoy = dataHoy.results.EUR;
-        const eurPenHoy = usdPenHoy / usdEurHoy;
+        const usdPenHoy = hoy.results.PEN;
+        const eurPenHoy = hoy.results.PEN / hoy.results.EUR;
 
-        // 2️⃣ Pedimos el valor de ayer
-        const fechaAyer = obtenerFechaAyer();
-        const API_URL_AYER = `https://api.fastforex.io/historical?from=USD&to=EUR,PEN&api_key=${API_KEY}&date=${fechaAyer}`;
-        const resAyer = await fetch(API_URL_AYER);
-        const dataAyer = await resAyer.json();
-        if (!dataAyer.results) return;
+        const ayer = await fetch(
+            `https://api.fastforex.io/historical?from=USD&to=EUR,PEN&api_key=${API_KEY}&date=${obtenerFechaAyer()}`
+        ).then(r => r.json());
 
-        const usdPenAyer = dataAyer.results.PEN;
-        const usdEurAyer = dataAyer.results.EUR;
-        const eurPenAyer = usdPenAyer / usdEurAyer;
+        if (!ayer.results) return;
 
-        // 3️⃣ Actualizamos en pantalla comparando hoy vs ayer
-        actualizarValor("usd-pen", "usd-change", usdPenHoy, usdPenAyer);
-        actualizarValor("eur-pen", "eur-change", eurPenHoy, eurPenAyer);
+        actualizar("usd-pen", "usd-change", usdPenHoy, ayer.results.PEN);
+        actualizar("eur-pen", "eur-change", eurPenHoy, ayer.results.PEN / ayer.results.EUR);
 
     } catch (e) {
-        console.error("Error al obtener tipos de cambio:", e);
+        console.error(e);
     }
 }
 
-function actualizarValor(idValor, idCambio, nuevoValor, valorPrevio) {
-    const valorEl = document.getElementById(idValor);
-    const cambioEl = document.getElementById(idCambio);
+function actualizar(idValor, idCambio, nuevo, viejo) {
+    const v = document.getElementById(idValor);
+    const c = document.getElementById(idCambio);
 
-    valorEl.textContent = nuevoValor.toFixed(3).replace(".", ",");
+    v.textContent = nuevo.toFixed(3).replace(".", ",");
 
-    if (!valorPrevio) {
-        cambioEl.textContent = "-";
-        cambioEl.className = "change";
-        return;
-    }
-
-    const variacion = ((nuevoValor - valorPrevio) / valorPrevio) * 100;
-
-    if (variacion > 0) {
-        cambioEl.textContent = `↑ ${variacion.toFixed(3)} %`;
-        cambioEl.className = "change up";
-    } else if (variacion < 0) {
-        cambioEl.textContent = `↓ ${Math.abs(variacion).toFixed(3)} %`;
-        cambioEl.className = "change down";
-    } else {
-        cambioEl.textContent = "0,000 %";
-        cambioEl.className = "change down";
-    }
+    const diff = ((nuevo - viejo) / viejo) * 100;
+    c.textContent = `${diff >= 0 ? "↑" : "↓"} ${Math.abs(diff).toFixed(3)} %`;
+    c.className = `change ${diff >= 0 ? "up" : "down"}`;
 }
 
 obtenerTiposCambio();
-setInterval(obtenerTiposCambio, 1000 * 60 * 60); // actualiza cada hora
 </script>
 
 </body>
-
 </html>
-
