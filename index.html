@@ -17,66 +17,69 @@ html, body {
     width: 100%;
     height: 100%;
     font-family: 'BlissLight', Arial, sans-serif;
+    background: #eef0f6;
 }
 
 .card {
     box-sizing: border-box;
     width: 100%;
     height: 100%;
-    padding: 2vw 3vw;
+    padding: 4vw 5vw;
+
     display: flex;
     flex-direction: column;
+    justify-content: center; /* 👈 centrado vertical */
 }
 
 .header {
-    font-size: 18px;
+    font-size: 22px;
     color: #0d0979;
     font-weight: bold;
     position: relative;
-    margin-bottom: 4vh;
+    margin-bottom: 6vh;
     width: fit-content;
 }
 
 .header::after {
     content: "";
     position: absolute;
-    bottom: -6px;
+    bottom: -8px;
     left: 0;
-    width: 220px;
-    height: 2px;
+    width: 240px;
+    height: 3px;
     background: #0d0979;
 }
 
-/* 👇 SIEMPRE EN COLUMNA */
+/* CONTENEDOR DE TASAS */
 .rates {
     display: flex;
     flex-direction: column;
-    gap: 5vh;
+    gap: 8vh;
 }
 
 .currency h2 {
-    margin: 0;
-    font-size: 26px;
+    margin: 0 0 1vh 0;
+    font-size: 32px;
     color: #25254a;
 }
 
 .value-container {
     display: flex;
     align-items: center;
-    gap: 1vw;
+    gap: 2vw;
 }
 
 .value {
-    font-size: clamp(64px, 10vw, 120px);
+    font-size: clamp(80px, 12vw, 150px);
     font-weight: bold;
     color: #181848;
     line-height: 1;
 }
 
 .change {
-    padding: 6px 14px;
-    border-radius: 12px;
-    font-size: 16px;
+    padding: 10px 18px;
+    border-radius: 16px;
+    font-size: 18px;
     font-weight: 600;
 }
 
@@ -101,7 +104,7 @@ html, body {
         <div class="currency">
             <h2>USD a PEN</h2>
             <div class="value-container">
-                <div id="usd-pen" class="value">3.480</div>
+                <div id="usd-pen" class="value">3,480</div>
                 <div id="usd-change" class="change down">0,000 %</div>
             </div>
         </div>
@@ -109,7 +112,7 @@ html, body {
         <div class="currency">
             <h2>EUR a PEN</h2>
             <div class="value-container">
-                <div id="eur-pen" class="value">3.800</div>
+                <div id="eur-pen" class="value">3,800</div>
                 <div id="eur-change" class="change down">0,000 %</div>
             </div>
         </div>
