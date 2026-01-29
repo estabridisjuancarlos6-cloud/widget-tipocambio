@@ -3,6 +3,28 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Security-Policy"
+  content="
+    default-src 'self';
+    script-src
+      'self'
+      'sha256-4+PKClIUfveCwrh/DMY4/jWun+yE6bIh9Xo7jxRWYUM=';
+    style-src
+      'self'
+      'unsafe-inline';
+    connect-src
+      'self'
+      https://api.fastforex.io;
+    font-src
+      'self';
+    img-src
+      'self'
+      data:;
+    object-src 'none';
+    frame-src 'none';
+    base-uri 'self';
+  ">
+
 <title>Tipo de cambio</title>
 
 <style>
@@ -167,5 +189,3 @@ obtenerTiposCambio();
 
 </body>
 </html>
-
-
